@@ -45,7 +45,9 @@ from backend.redis_cache import (
     record_user_watch,
     get_user_preferred_genres,
     flush_recommendation_cache
+# pyrefly: ignore [missing-import]
 )
+# pyrefly: ignore [missing-import]
 from backend.chat_engine import CineBotEngine
 
 load_dotenv()
@@ -247,16 +249,11 @@ def login_user(payload: UserLogin):
             }
         }
 
-    # If first time demo login
-    return {
-        "success": True,
-        "message": "Authenticated successfully.",
-        "user": {
-            "id": 1,
-            "email": email_clean,
-            "name": email_clean.split("@")[0]
-        }
-    }
+    # 3. If user doesn't exist, reject the login
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Account not found. Please sign up first."
+    )
 
 
 # ==========================================
